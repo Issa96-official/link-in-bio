@@ -15,7 +15,9 @@
     "fix-gh-pages": "node fix-github-pages.cjs",
     "copy-debug-files": "node copy-debug-files.cjs",
     "predeploy": "npm run build:github && npm run fix-gh-pages && npm run copy-debug-files",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "build:nomodule": "node build-nomodule.cjs",
+    "deploy:nomodule": "node deploy-nomodule.cjs"
   },
   "dependencies": {
     "axios": "^1.6.7",

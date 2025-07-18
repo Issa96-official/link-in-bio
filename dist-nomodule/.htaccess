@@ -1,0 +1,21 @@
+
+# Sätt korrekta MIME-typer
+AddType text/javascript .js
+AddType text/javascript .jsx
+AddType application/json .json
+AddType text/css .css
+
+# Stäng av MIME-type sniffing
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Rewrite-regler för SPA
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /link-in-bio/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /link-in-bio/index.html [L]
+</IfModule>
