@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/link-in-bio/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issa Alissa - Link in Bio</title>
+    <meta name="description" content="Issa Alissa - All your important links in one place" />
+    
+    <!-- Script för GitHub Pages SPA routing -->
+    <script type="text/javascript">
+      // Hantera GitHub Pages 404 redirects
+      (function() {
+        // Parsa query parameters
+        var redirect = false;
+        var queryParams = {};
+        var search = window.location.search.substring(1);
+        
+        if (search) {
+          var pairs = search.split('&');
+          for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            queryParams[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+          }
+          
+          // Om vi har en 'p' parameter, det innebär att vi kommer från 404.html
+          if (queryParams.p) {
+            redirect = true;
+            var pathname = queryParams.p;
+            delete queryParams.p;
+            
+            var newSearch = Object.keys(queryParams)
+              .map(function(key) {
+                return key + '=' + queryParams[key];
+              })
+              .join('&');
+            
+            var newUrl = pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            
+            // Använd history API för att ersätta URL
+            window.history.replaceState(null, null, newUrl);
+          }
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/link-in-bio/assets/index-BFgUx6SJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/link-in-bio/assets/index-Ds6LZ7Sk.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
