@@ -3,17 +3,244 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Issa Alissa - Link in Bio</title>
-  <!-- Ensure JavaScript is loaded with the correct MIME type -->
-  <meta http-equiv="Content-Type" content="text/javascript; charset=utf-8">
+  <title>Link in Bio - Felsökningsverktyg</title>
+  <script src="./debug.js"></script>
+  <style>
+    body { 
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px; 
+      margin: 0 auto; 
+      padding: 20px; 
+      line-height: 1.6;
+    }
+    button { 
+      padding: 10px 15px; 
+      margin: 5px 0; 
+      cursor: pointer; 
+      background: #7C41F5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #6433c8;
+    }
+    pre { 
+      background: #f5f5f5; 
+      padding: 10px; 
+      overflow: auto; 
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    #results { 
+      margin-top: 20px; 
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      background: white;
+    }
+    .explanation {
+      background-color: #f0f8ff;
+      padding: 10px;
+      border-left: 4px solid #7C41F5;
+      margin: 10px 0;
+    }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
+  <h1>Link in Bio - Felsökningsverktyg</h1>
+  <p>Denna sida hjälper till att diagnostisera problem med GitHub Pages-deployment.</p>
+  
+  <div class="explanation">
+    <p>Om din sida inte fungerar korrekt på GitHub Pages, kan du använda detta verktyg för att identifiera vad som går fel.</p>
+  </div>
+  
+  <div class="card">
+    <h3>Testa resursvägar</h3>
+    <p>Kontrollera om din webbläsare kan hitta resursfilerna som din app behöver.</p>
+    <button id="testAssets">Testa resursvägar</button>
+  </div>
+  
+  <div class="card">
+    <h3>Testa skriptladdning</h3>
+    <p>Kontrollera om dina JavaScript-filer kan laddas och köras korrekt.</p>
+    <button id="testScriptLoad">Testa skriptladdning</button>
+  </div>
+  
+  <div class="card">
+    <h3>Navigeringsalternativ</h3>
+    <p>Testa olika sätt att ladda sidan:</p>
+    <button id="goToApp">Gå till huvudappen</button>
+    <button id="goToDirectLoader">Gå till direct-loader</button>
+    <button id="goToHashRouter">Gå till appen med hash</button>
+  </div>
+  
+  <div id="results">
+    <h3>Testresultat:</h3>
+    <pre id="resultOutput">Kör tester för att se resultat</pre>
+  </div>
+  
   <script>
-    console.log('Deploy.html loaded');
-    // Redirect to the main app but with hash to ensure routing works
-    window.location.href = '/link-in-bio/#/';
+    const resultOutput = document.getElementById('resultOutput');
+    
+    document.getElementById('testAssets').addEventListener('click', async () => {
+      resultOutput.innerHTML = 'Testar resursvägar...\n';
+      
+      const pathsToTest = [
+        './assets/',
+        '/assets/',
+        '/link-in-bio/assets/',
+        './dist/assets/',
+        '/link-in-bio/dist/assets/'
+      ];
+      
+      for (const path of pathsToTest) {
+        try {
+          const response = await fetch(path);
+          const status = response.status;
+          const text = status === 200 ? 'LYCKADES' : 'MISSLYCKADES';
+          const className = status === 200 ? 'success' : 'error';
+          
+          resultOutput.innerHTML += `<span class="${className}">[${text}] Sökväg: ${path} (Status: ${status})</span>\n`;
+          
+          if (status === 200) {
+            try {
+              const text = await response.text();
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(text, 'text/html');
+              const links = Array.from(doc.querySelectorAll('a'));
+              const jsFiles = links
+                .filter(link => String(link.textContent).endsWith('.js'))
+                .map(link => link.textContent);
+              
+              if (jsFiles.length > 0) {
+                resultOutput.innerHTML += `<span class="success">Hittade JS-filer: ${jsFiles.join(', ')}</span>\n`;
+              } else {
+                resultOutput.innerHTML += `<span class="error">Inga JS-filer hittades i katalogen</span>\n`;
+              }
+            } catch (e) {
+              resultOutput.innerHTML += `<span class="error">Kunde inte analysera kataloginnehåll: ${e.message}</span>\n`;
+            }
+          }
+        } catch (e) {
+          resultOutput.innerHTML += `<span class="error">[FEL] Sökväg: ${path} - ${e.message}</span>\n`;
+        }
+      }
+    });
+    
+    document.getElementById('testScriptLoad').addEventListener('click', async () => {
+      resultOutput.innerHTML = 'Testar skriptladdning...\n';
+      
+      // Försök hitta faktiska JS-filer först
+      let scriptsToTest = [];
+      try {
+        const response = await fetch('./assets/');
+        if (response.ok) {
+          const text = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a'));
+          const jsFiles = links
+            .filter(link => String(link.textContent).endsWith('.js'))
+            .map(link => `./assets/${link.textContent}`);
+          
+          if (jsFiles.length > 0) {
+            resultOutput.innerHTML += `<span class="success">Hittade JS-filer: ${jsFiles.join(', ')}</span>\n`;
+            scriptsToTest = [...jsFiles];
+          }
+        }
+      } catch (e) {
+        resultOutput.innerHTML += `<span class="error">Kunde inte lista assets-katalogen: ${e.message}</span>\n`;
+      }
+      
+      // Lägg till fallback-skript om inga hittades
+      if (scriptsToTest.length === 0) {
+        scriptsToTest = [
+          './assets/index.js',
+          '/assets/index.js',
+          '/link-in-bio/assets/index.js',
+          './index.js'
+        ];
+      }
+      
+      for (const scriptPath of scriptsToTest) {
+        try {
+          const startTime = performance.now();
+          const response = await fetch(scriptPath);
+          const endTime = performance.now();
+          const status = response.status;
+          const text = status === 200 ? 'LYCKADES' : 'MISSLYCKADES';
+          const className = status === 200 ? 'success' : 'error';
+          
+          resultOutput.innerHTML += `<span class="${className}">[${text}] Skript: ${scriptPath} (Status: ${status}, Tid: ${Math.round(endTime - startTime)}ms)</span>\n`;
+          
+          if (status === 200) {
+            // Testa om den kan köras som en modul
+            try {
+              const contentType = response.headers.get('Content-Type');
+              resultOutput.innerHTML += `<span class="info">  Content-Type: ${contentType || 'Ingen content-type header'}</span>\n`;
+              
+              const scriptEl = document.createElement('script');
+              scriptEl.type = 'module';
+              scriptEl.src = scriptPath;
+              scriptEl.dataset.testId = scriptPath;
+              
+              // Använd en promise för att vänta på resultatet
+              const loadPromise = new Promise((resolve, reject) => {
+                scriptEl.onload = () => {
+                  resultOutput.innerHTML += `<span class="success">[LYCKADES] Modulladdning: ${scriptPath}</span>\n`;
+                  resolve();
+                };
+                scriptEl.onerror = (e) => {
+                  resultOutput.innerHTML += `<span class="error">[FEL] Modulladdning: ${scriptPath} - ${e.message || 'Kunde inte ladda som modul'}</span>\n`;
+                  reject(e);
+                };
+                // Timeout för att undvika att vänta för evigt
+                setTimeout(() => {
+                  reject(new Error('Timeout'));
+                }, 5000);
+              });
+              
+              document.head.appendChild(scriptEl);
+              
+              try {
+                await loadPromise;
+              } catch (e) {
+                // Felhantering gjord i promise
+              }
+            } catch (e) {
+              resultOutput.innerHTML += `<span class="error">[FEL] Modulkörning: ${scriptPath} - ${e.message}</span>\n`;
+            }
+          }
+        } catch (e) {
+          resultOutput.innerHTML += `<span class="error">[FEL] Skript: ${scriptPath} - ${e.message}</span>\n`;
+        }
+      }
+    });
+    
+    document.getElementById('goToApp').addEventListener('click', () => {
+      window.location.href = './index.html';
+    });
+    
+    document.getElementById('goToDirectLoader').addEventListener('click', () => {
+      window.location.href = './direct-loader.html';
+    });
+    
+    document.getElementById('goToHashRouter').addEventListener('click', () => {
+      window.location.href = './#/';
+    });
   </script>
 </body>
 </html>
