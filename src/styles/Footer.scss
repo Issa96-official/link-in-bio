@@ -1,0 +1,26 @@
+@import './variables';
+
+.footer {
+  margin-top: 2.5rem;
+  text-align: center;
+  padding: 1.8rem 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+    opacity: 0.3;
+  }
+  
+  p {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    letter-spacing: 0.02em;
+  }
+}

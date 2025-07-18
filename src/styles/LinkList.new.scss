@@ -1,0 +1,108 @@
+@import './variables';
+
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1.5rem 0;
+}
+
+// Loading and error states
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-color);
+
+  .spin {
+    animation: spin 1s linear infinite;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.error-message {
+  padding: 1.5rem;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  color: #ff3333;
+  text-align: center;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem 1.8rem;
+  background-color: var(--link-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 20px var(--card-shadow);
+  transition: all $transition-speed ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.link-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--link-icon-color, var(--accent-color));
+  opacity: 0;
+  transition: opacity $transition-speed ease;
+}
+
+.link-item:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px var(--card-shadow);
+}
+
+.link-item:hover::before {
+  opacity: 1;
+}
+
+.link-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--link-icon-color, var(--accent-color));
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.link-icon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--link-icon-color, var(--accent-color));
+  opacity: 0.12;
+  border-radius: 50%;
+}
+
+.link-title {
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}

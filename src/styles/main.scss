@@ -1,0 +1,56 @@
+// Main styles
+@import './variables';
+@import './reset';
+
+:root {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --link-bg: #ffffff;
+  --link-hover: #f0f0f0;
+  --accent-color: #7C41F5;
+  --gradient-start: #7C41F5;
+  --gradient-end: #3C98F5;
+  --border-radius: 16px;
+}
+
+body[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --card-shadow: rgba(0, 0, 0, 0.2);
+  --link-bg: #2a2a2a;
+  --link-hover: #333333;
+  --accent-color: #9F7AFA;
+  --gradient-start: #9F7AFA;
+  --gradient-end: #4EAEFF;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(124, 65, 245, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(60, 152, 245, 0.05) 0%, transparent 50%);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+main {
+  flex: 1;
+}

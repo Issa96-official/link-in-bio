@@ -1,0 +1,16 @@
+# Move existing frontend files to frontend folder
+
+echo "Moving files to frontend folder..."
+
+# Source code files
+cp -r src/* frontend/src/
+
+# Public files
+cp -r public/* frontend/public/
+
+# Clean up root directory
+echo "Done moving files. Please run the following commands manually:"
+echo "1. Delete the old files from the root folder (src, public, index.html, etc.)"
+echo "2. Rename package.json.new to package.json"
+echo "3. Rename tasks.json.new to tasks.json"
+echo "4. Run 'npm run install:all' to install dependencies"

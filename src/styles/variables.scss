@@ -1,0 +1,81 @@
+// Variables
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Transitions
+$transition-speed: 0.3s;
+
+// Common CSS Variables
+:root {
+  // Theme Colors
+  --primary-color: #3498db;
+  --primary-color-dark: #2980b9;
+  --primary-color-rgb: 52, 152, 219;
+  --secondary-color: #2ecc71;
+  --secondary-color-dark: #27ae60;
+  --danger-color: #e74c3c;
+  --danger-color-rgb: 231, 76, 60;
+  --warning-color: #f39c12;
+
+  // Font
+  --font-primary: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  
+  // Layout for admin panel
+  --sidebar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --border-color: #e1e4e8;
+  --hover-color: #f6f8fa;
+  --active-item-bg: #f1f8ff;
+  
+  // Form Elements
+  --input-bg: #ffffff;
+  --toggle-bg: #ccc;
+  
+  // Button Colors
+  --edit-btn-bg: #eef2ff;
+  --edit-btn-color: #4f46e5;
+  --edit-btn-hover: #dbeafe;
+  --delete-btn-bg: #fef2f2;
+  --delete-btn-color: #ef4444;
+  --delete-btn-hover: #fee2e2;
+  
+  // Icon
+  --icon-bg: #f5f5f5;
+}
+
+body.dark-theme {
+  // Theme Colors (keeping the accent colors the same)
+  --primary-color: #3498db;
+  --primary-color-dark: #2980b9;
+  --secondary-color: #2ecc71;
+  --secondary-color-dark: #27ae60;
+  --danger-color: #e74c3c;
+  --danger-color-rgb: 231, 76, 60;
+  --warning-color: #f39c12;
+  
+  // Layout for admin panel
+  --sidebar-bg: #1e1e2d;
+  --card-bg: #2d2d3f;
+  --border-color: #3f3f5f;
+  --hover-color: #2a2a3c;
+  --active-item-bg: #2c2c40;
+  
+  // Form Elements
+  --input-bg: #1e1e2d;
+  --toggle-bg: #3f3f5f;
+  
+  // Button Colors (adjusted for dark theme)
+  --edit-btn-bg: #3d3d5c;
+  --edit-btn-color: #a5b4fc;
+  --edit-btn-hover: #4d4d77;
+  --delete-btn-bg: #4d3131;
+  --delete-btn-color: #fca5a5;
+  --delete-btn-hover: #632b2b;
+  
+  // Icon
+  --icon-bg: #2a2a3c;
+}
