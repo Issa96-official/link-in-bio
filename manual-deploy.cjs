@@ -98,8 +98,9 @@ async function main() {
     `;
     
     // Fix relative paths to absolute with correct base
-    indexContent = indexContent.replace(/src="\.\//g, 'src="/link-in-bio/');
-    indexContent = indexContent.replace(/href="\.\//g, 'href="/link-in-bio/');
+    // För produktion, använd bara relativa sökvägar för säkerhet
+    // indexContent = indexContent.replace(/src="\.\//g, 'src="/link-in-bio/');
+    // indexContent = indexContent.replace(/href="\.\//g, 'href="/link-in-bio/');
     
     // Add MIME type meta tag for JavaScript
     indexContent = indexContent.replace('</head>', '<meta http-equiv="Content-Type" content="text/javascript; charset=utf-8" /></head>');

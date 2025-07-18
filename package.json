@@ -12,7 +12,8 @@
     "server": "node server/index.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "prepare-gh-pages": "node prepare-gh-pages.cjs",
-    "predeploy": "npm run build:github && npm run prepare-gh-pages",
+    "fix-gh-pages": "node fix-github-pages.cjs",
+    "predeploy": "npm run build:github && npm run fix-gh-pages",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
