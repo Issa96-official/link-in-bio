@@ -1,0 +1,4 @@
+AddType text/javascript .js
+AddType text/javascript .mjs
+AddType application/javascript .js
+AddType application/javascript .mjs
