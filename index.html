@@ -46,6 +46,11 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Konsollmeddelande för att se om sidan laddar -->
+    <script>
+      console.log('Index.html loaded');
+      console.log('Window location:', window.location.href);
+    </script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

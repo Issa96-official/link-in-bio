@@ -61,9 +61,11 @@ if (!isDevelopment || isGitHubPages) {
   // Intercepta alla request och gör om dem till mockdata om vi är på GitHub Pages
   axios.interceptors.request.use((config) => {
     if (isDevelopment && !isGitHubPages) {
+      console.log('Using real API endpoint');
       return config;
     }
     
+    console.log('Intercepting request for mockdata:', config.url);
     // Markera requesten för mockdata
     config.headers = config.headers || {};
     config.headers['x-mock-data'] = 'true';
@@ -73,8 +75,14 @@ if (!isDevelopment || isGitHubPages) {
   
   // Lägg till en response interceptor för att simulera backend
   axios.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      console.log('Response success:', response.config.url);
+      return response;
+    },
     (error) => {
+      console.log('Response error for URL:', error.config?.url);
+      console.log('Is mockdata request:', error.config?.headers?.['x-mock-data'] === 'true');
+      
       // Om detta är en mockdata-request (från GitHub Pages), returnera mockdata
       if (error.config?.headers?.['x-mock-data'] === 'true') {
         const url = error.config.url || '';

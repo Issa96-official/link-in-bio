@@ -9,5 +9,12 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true,
+    emptyOutDir: true, // Rensa dist-mappen innan byggning
+    minify: 'terser', // Använd terser för minifiering
+    target: 'es2015', // Kompatibilitet med äldre webbläsare
+  },
+  server: {
+    cors: true,
+    port: 3000,
   }
 })

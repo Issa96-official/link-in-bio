@@ -17,7 +17,9 @@ function App() {
   useEffect(() => {
     const fetchProfileTheme = async () => {
       try {
+        console.log('Fetching profile theme...');
         const response = await profileAPI.getProfile();
+        console.log('Profile response:', response);
         if (response.data && response.data.theme) {
           setTheme(response.data.theme);
         }
