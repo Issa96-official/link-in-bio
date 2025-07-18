@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "server": "node server/index.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
-    "predeploy": "npm run build",
+    "prepare-gh-pages": "node scripts/prepare-github-pages.js",
+    "predeploy": "npm run build && npm run prepare-gh-pages",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

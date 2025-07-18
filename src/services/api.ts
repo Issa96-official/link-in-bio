@@ -1,14 +1,27 @@
 import axios from 'axios';
 
 // Base URL - set explicitly to make sure we're connecting to the backend
-// For GitHub Pages, we'll use a conditional to check if we're in production
+// För GitHub Pages, skapa mockdata om vi är i produktion
 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Konfigurera API URL - för GitHub Pages demo, använd mockdata
 const API_BASE_URL = isDevelopment 
-  ? 'http://localhost:5000/api' 
-  : 'https://api.example.com/api'; // Du behöver ersätta detta med din faktiska API-URL när du har en
+  ? 'http://localhost:5000/api'
+  : ''; // Tom sträng för att använda relativa sökvägar med mockdata
 
 // Configure axios
 axios.defaults.baseURL = API_BASE_URL;
+
+// För GitHub Pages, skapa mockdata för demo-syfte
+const createMockResponse = (data: any) => {
+  return {
+    data,
+    status: 200,
+    statusText: 'OK',
+    headers: {},
+    config: {},
+  };
+};
 
 // Add a request interceptor
 axios.interceptors.request.use(
@@ -21,6 +34,50 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+// Om vi är i produktion, lägg till en respons-interceptor för att använda mockdata
+if (!isDevelopment) {
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      // Om det är ett GitHub Pages-demo, returnera mockdata
+      console.log('Using mock data for GitHub Pages demo');
+      
+      // Hantera olika API-anrop med mockdata
+      const url = error.config.url;
+      
+      if (url.includes('/links')) {
+        return Promise.resolve(createMockResponse([
+          { id: 1, title: 'Min webbplats', url: 'https://issa96-official.github.io', icon: 'globe', displayOrder: 1 },
+          { id: 2, title: 'GitHub', url: 'https://github.com/Issa96-official', icon: 'github', displayOrder: 2 },
+          { id: 3, title: 'LinkedIn', url: 'https://linkedin.com/in/issa-alissa', icon: 'linkedin', displayOrder: 3 },
+          { id: 4, title: 'Twitter', url: 'https://twitter.com/issaalissa', icon: 'twitter', displayOrder: 4 },
+        ]));
+      }
+      
+      if (url.includes('/profile')) {
+        return Promise.resolve(createMockResponse({
+          name: 'Issa Alissa',
+          title: 'Frontend Developer',
+          bio: 'Passionate about creating beautiful web experiences',
+          theme: 'light',
+          image: 'https://github.com/Issa96-official.png',
+        }));
+      }
+      
+      if (url.includes('/auth/me')) {
+        return Promise.resolve(createMockResponse({
+          id: 1,
+          email: 'demo@example.com',
+          name: 'Issa Alissa',
+        }));
+      }
+      
+      // Fallback för andra anrop
+      return Promise.reject(error);
+    }
+  );
+}
 
 // Auth API
 export const authAPI = {
