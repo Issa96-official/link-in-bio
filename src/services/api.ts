@@ -19,17 +19,6 @@ const API_BASE_URL = !isGitHubPages && isDevelopment
 // Configure axios
 axios.defaults.baseURL = API_BASE_URL;
 
-// För GitHub Pages, skapa mockdata för demo-syfte
-const createMockResponse = (data: any) => {
-  return {
-    data,
-    status: 200,
-    statusText: 'OK',
-    headers: {},
-    config: {},
-  };
-};
-
 // Mockdata för GitHub Pages demo
 const mockLinks = [
   { id: 1, title: 'Min webbplats', url: 'https://issa96-official.github.io/link-in-bio', icon: 'globe', displayOrder: 1 },
@@ -64,89 +53,119 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Om vi är i produktion eller på GitHub Pages, lägg till en respons-interceptor för att direkt använda mockdata
+// Använd en annan metod för mockdata som inte kräver att vi ersätter axios.request
+// Detta löser TypeScript-kompatibilitetsproblem
 if (!isDevelopment || isGitHubPages) {
   console.log('Setting up mock data for production or GitHub Pages environment');
-  // Ersätt hela axios.request metoden för mockdata
-  const originalRequest = axios.request;
   
-  // Använd explicit typning för att åtgärda TypeScript-felet
-  axios.request = function(config): Promise<any> {
-    // Kontrollera vilken typ av request det är och returnera mockdata
-    const url = config.url || '';
+  // Intercepta alla request och gör om dem till mockdata om vi är på GitHub Pages
+  axios.interceptors.request.use((config) => {
+    if (isDevelopment && !isGitHubPages) {
+      return config;
+    }
     
-    console.log('Mock API call:', config.method, url);
+    // Markera requesten för mockdata
+    config.headers = config.headers || {};
+    config.headers['x-mock-data'] = 'true';
     
-    // GET anrop för links
-    if (config.method === 'get' && url.includes('/links')) {
-      if (url.includes('/admin')) {
-        return Promise.resolve(createMockResponse(mockLinks));
-      } else {
-        return Promise.resolve(createMockResponse(mockLinks));
+    return config;
+  });
+  
+  // Lägg till en response interceptor för att simulera backend
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      // Om detta är en mockdata-request (från GitHub Pages), returnera mockdata
+      if (error.config?.headers?.['x-mock-data'] === 'true') {
+        const url = error.config.url || '';
+        const method = error.config.method || '';
+        
+        console.log('Providing mock data for:', method, url);
+        
+        // GET anrop för links
+        if (method === 'get' && url.includes('/links')) {
+          if (url.includes('/admin')) {
+            return Promise.resolve({ data: mockLinks });
+          } else {
+            return Promise.resolve({ data: mockLinks });
+          }
+        }
+        
+        // GET anrop för ett specifikt link ID
+        if (method === 'get' && url.match(/\/links\/\d+/)) {
+          const id = parseInt(url.split('/').pop() || '0');
+          const link = mockLinks.find(l => l.id === id);
+          return Promise.resolve({ data: link || {} });
+        }
+        
+        // POST för nya länkar
+        if (method === 'post' && url.includes('/links')) {
+          return Promise.resolve({ 
+            data: { 
+              id: 5, 
+              ...JSON.parse(error.config.data || '{}'), 
+              displayOrder: mockLinks.length + 1 
+            } 
+          });
+        }
+        
+        // PUT för att uppdatera länkar
+        if (method === 'put' && url.match(/\/links\/\d+/)) {
+          return Promise.resolve({ data: { ...JSON.parse(error.config.data || '{}') } });
+        }
+        
+        // DELETE för länkar
+        if (method === 'delete' && url.match(/\/links\/\d+/)) {
+          return Promise.resolve({ data: { success: true } });
+        }
+        
+        // GET anrop för profile
+        if (method === 'get' && url.includes('/profile')) {
+          return Promise.resolve({ data: mockProfile });
+        }
+        
+        // PUT för att uppdatera profile
+        if (method === 'put' && url.includes('/profile')) {
+          return Promise.resolve({ 
+            data: { ...mockProfile, ...JSON.parse(error.config.data || '{}') }
+          });
+        }
+        
+        // POST för profilbild
+        if (method === 'post' && url.includes('/profile/image')) {
+          return Promise.resolve({ 
+            data: {
+              success: true, 
+              image: 'https://github.com/Issa96-official.png' 
+            }
+          });
+        }
+        
+        // GET för auth/me
+        if (method === 'get' && url.includes('/auth/me')) {
+          return Promise.resolve({ data: mockUser });
+        }
+        
+        // POST för login
+        if (method === 'post' && url.includes('/auth/login')) {
+          return Promise.resolve({ 
+            data: { 
+              token: 'mock-jwt-token-for-demo-purposes-only',
+              user: mockUser
+            }
+          });
+        }
+        
+        // PUT för password change
+        if (method === 'put' && url.includes('/auth/password')) {
+          return Promise.resolve({ data: { success: true } });
+        }
       }
+      
+      // Om detta inte är en mockdata-request, fortsätt med error
+      return Promise.reject(error);
     }
-    
-    // GET anrop för ett specifikt link ID
-    if (config.method === 'get' && url.match(/\/links\/\d+/)) {
-      const id = parseInt(url.split('/').pop() || '0');
-      const link = mockLinks.find(l => l.id === id);
-      return Promise.resolve(createMockResponse(link || {}));
-    }
-    
-    // POST för nya länkar
-    if (config.method === 'post' && url.includes('/links')) {
-      return Promise.resolve(createMockResponse({ id: 5, ...config.data, displayOrder: mockLinks.length + 1 }));
-    }
-    
-    // PUT för att uppdatera länkar
-    if (config.method === 'put' && url.match(/\/links\/\d+/)) {
-      return Promise.resolve(createMockResponse({ ...config.data }));
-    }
-    
-    // DELETE för länkar
-    if (config.method === 'delete' && url.match(/\/links\/\d+/)) {
-      return Promise.resolve(createMockResponse({ success: true }));
-    }
-    
-    // GET anrop för profile
-    if (config.method === 'get' && url.includes('/profile')) {
-      return Promise.resolve(createMockResponse(mockProfile));
-    }
-    
-    // PUT för att uppdatera profile
-    if (config.method === 'put' && url.includes('/profile')) {
-      return Promise.resolve(createMockResponse({ ...mockProfile, ...config.data }));
-    }
-    
-    // POST för profilbild
-    if (config.method === 'post' && url.includes('/profile/image')) {
-      return Promise.resolve(createMockResponse({ 
-        success: true, 
-        image: 'https://github.com/Issa96-official.png' 
-      }));
-    }
-    
-    // GET för auth/me
-    if (config.method === 'get' && url.includes('/auth/me')) {
-      return Promise.resolve(createMockResponse(mockUser));
-    }
-    
-    // POST för login
-    if (config.method === 'post' && url.includes('/auth/login')) {
-      return Promise.resolve(createMockResponse({ 
-        token: 'mock-jwt-token-for-demo-purposes-only',
-        user: mockUser
-      }));
-    }
-    
-    // PUT för password change
-    if (config.method === 'put' && url.includes('/auth/password')) {
-      return Promise.resolve(createMockResponse({ success: true }));
-    }
-    
-    // För alla andra anrop, använd original axios
-    return originalRequest(config);
-  };
+  );
 }
 
 // Auth API
