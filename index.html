@@ -1,113 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Issa Alissa - Link in Bio</title>
-  <meta name="description" content="Issa Alissa - All your important links in one place" />
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      color: #333;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Issa Alissa - Link in Bio</title>
+    <meta name="description" content="Issa Alissa - All your important links in one place" />
     
-    #loading-message {
-      max-width: 500px;
-      margin: 100px auto;
-      text-align: center;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .spinner {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(124, 65, 245, 0.1);
-      border-radius: 50%;
-      border-top-color: #7C41F5;
-      animation: spin 1s ease-in-out infinite;
-      margin-bottom: 20px;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-  
-  <div id="loading-message">
-    <div class="spinner"></div>
-    <h1>Laddar Issa Alissa's Link in Bio</h1>
-    <p>Var god vänta medan applikationen laddas...</p>
-  </div>
-
-  <!-- Ladda React och React DOM via CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
-  
-  <!-- Ladda React Icons via CDN -->
-  <script src="https://unpkg.com/react-icons@4/lib/cjs/index.js" crossorigin></script>
-
+    <!-- Script för GitHub Pages SPA routing -->
+    <script type="text/javascript">
+      // Hantera GitHub Pages 404 redirects
+      (function() {
+        // Parsa query parameters
+        var redirect = false;
+        var queryParams = {};
+        var search = window.location.search.substring(1);
+        
+        if (search) {
+          var pairs = search.split('&');
+          for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            queryParams[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+          }
+          
+          // Om vi har en 'p' parameter, det innebär att vi kommer från 404.html
+          if (queryParams.p) {
+            redirect = true;
+            var pathname = queryParams.p;
+            delete queryParams.p;
+            
+            var newSearch = Object.keys(queryParams)
+              .map(function(key) {
+                return key + '=' + queryParams[key];
+              })
+              .join('&');
+            
+            var newUrl = pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            
+            // Använd history API för att ersätta URL
+            window.history.replaceState(null, null, newUrl);
+          }
+        }
+      })();
+    </script>
   <script>
-    console.log('No-module loader starting...');
-    console.log('Window location:', window.location.href);
-    
-    // Hjälpfunktion för att ladda applikationen
-    function loadApp() {
-      // Skapa ett script-element som laddar din applikationskod 
-      // men utan att använda "module" type, vilket kringgår MIME-typkontrollen
-      const script = document.createElement('script');
-      
-      // Viktigt: Använd text/javascript istället för module
-      script.type = 'text/javascript';
-      
-      // Försök med olika sökvägar till din app-bundle
-      script.src = './assets/index.js';
-      
-      script.onerror = (e) => {
-        console.error('Failed to load main script:', e);
-        
-        // Om första försöket misslyckas, försök med andra möjliga sökvägar
-        const alternativeScript = document.createElement('script');
-        alternativeScript.type = 'text/javascript';
-        alternativeScript.src = './index.js';
-        
-        alternativeScript.onerror = () => {
-          document.getElementById('loading-message').innerHTML = `
-            <h1>Något gick fel</h1>
-            <p>Kunde inte ladda applikationen. Vänligen försök igen senare.</p>
-            <p><small>Teknisk information: Kunde inte hitta JavaScript-bundle.</small></p>
-          `;
-        };
-        
-        document.body.appendChild(alternativeScript);
-      };
-      
-      // Lägg till scriptet i DOM för att börja laddningen
-      document.body.appendChild(script);
-    }
-    
-    // Vänta tills DOM är redo
-    window.addEventListener('DOMContentLoaded', loadApp);
-    
-    // Monitor root element for changes
-    const observer = new MutationObserver(function(mutations) {
-      if (document.getElementById('root').children.length > 0) {
-        document.getElementById('loading-message').style.display = 'none';
-        observer.disconnect();
-      }
-    });
-    
-    observer.observe(document.getElementById('root'), { childList: true, subtree: true });
-  </script>
-</body>
+      console.log('Built for GitHub Pages - JavaScript Version');
+      console.log('Base URL:', window.location.href);
+    </script>
+</head>
+  <body>
+    <div id="root"></div>
+    <!-- Konsollmeddelande för att se om sidan laddar -->
+    <script>
+      console.log('Index.html loaded');
+      console.log('Window location:', window.location.href);
+      console.log('Checking MIME type issues...');
+    </script>
+    <!-- Importera med JavaScript istället för TypeScript -->
+    <script type="module" src="./assets/index.js"></script>
+  </body>
 </html>
