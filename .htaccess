@@ -1,4 +1,30 @@
-AddType text/javascript .js
-AddType text/javascript .mjs
+# Set MIME types for JavaScript files
 AddType application/javascript .js
 AddType application/javascript .mjs
+AddType text/javascript .js
+AddType text/javascript .mjs
+
+# Set MIME types for CSS files
+AddType text/css .css
+
+# Set MIME types for JSON files
+AddType application/json .json
+
+# Handle SPA routing
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /link-in-bio/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /link-in-bio/index.html [L]
+</IfModule>
+
+# Prevent caching to help with troubleshooting
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|html)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+</IfModule>

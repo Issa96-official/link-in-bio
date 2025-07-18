@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Issa Alissa - Link in Bio</title>
+  <meta name="description" content="Issa Alissa - All your important links in one place" />
+  <!-- Force correct content type -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <script>
+    console.log('Direct loader index.html loaded');
+    console.log('Window location:', window.location.href);
+    
+    // Helper function to load script with proper type
+    function loadScript(src, type) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = type || 'text/javascript';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Wait for DOM to be ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load the JavaScript files manually
+      Promise.all([
+        loadScript('./assets/index.js', 'text/javascript')
+      ])
+      .then(() => console.log('All scripts loaded successfully'))
+      .catch(err => console.error('Failed to load scripts:', err));
+    });
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  
+  <!-- Fallback message -->
+  <div id="loading-message" style="text-align: center; padding-top: 40px; font-family: sans-serif;">
+    <h1>Loading application...</h1>
+    <p>If nothing happens, please check the browser console for errors.</p>
+  </div>
+
+  <script>
+    // Hide loading message once app starts rendering
+    const observer = new MutationObserver(function(mutations) {
+      if (document.getElementById('root').children.length > 0) {
+        const loadingMsg = document.getElementById('loading-message');
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        observer.disconnect();
+      }
+    });
+    
+    observer.observe(document.getElementById('root'), { childList: true });
+  </script>
+</body>
+</html>
