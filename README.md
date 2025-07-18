@@ -1,33 +1,36 @@
-# Skappa Link in Bio
+# Issa Alissa Link in Bio
 
-A modern "Link in Bio" website built with React, TypeScript, and SASS using Vite.
+En modern "Link in Bio"-webbplats byggd med React, TypeScript, och SASS med Vite.
 
-## Features
+## Funktioner
 
-- Responsive design for all devices
-- Light and dark theme toggle
-- Social media links with icons
-- Clean and modern UI
+- Responsiv design för alla enheter
+- Mörkt/ljust tema
+- Admingränssnitt för att hantera länkar
+- Profilanpassning (namn, bild, bio)
+- Autentisering med JWT
 
-## Technologies Used
+## Tekniker
 
 - React 18
 - TypeScript
-- SASS for styling
-- Vite for build tooling
-- React Icons for social media icons
+- Node.js och Express för backend
+- SQLite för databas
+- SASS för styling
+- Vite för build tooling
+- React Icons för sociala media-ikoner
 
-## Getting Started
+## Kom igång
 
-### Prerequisites
+### Förutsättningar
 
-- Node.js (latest LTS version recommended)
-- npm or yarn
+- Node.js (senaste LTS-versionen rekommenderas)
+- npm eller yarn
 
 ### Installation
 
-1. Clone the repository
-2. Install dependencies:
+1. Klona repositoriet
+2. Installera beroenden:
 
 ```bash
 npm install
