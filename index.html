@@ -9,23 +9,43 @@
     
     <!-- Script för GitHub Pages SPA routing -->
     <script type="text/javascript">
-      // Single Page Apps for GitHub Pages
-      // MIT License
-      // https://github.com/rafgraph/spa-github-pages
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
+      // Hantera GitHub Pages 404 redirects
+      (function() {
+        // Parsa query parameters
+        var redirect = false;
+        var queryParams = {};
+        var search = window.location.search.substring(1);
+        
+        if (search) {
+          var pairs = search.split('&');
+          for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            queryParams[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+          }
+          
+          // Om vi har en 'p' parameter, det innebär att vi kommer från 404.html
+          if (queryParams.p) {
+            redirect = true;
+            var pathname = queryParams.p;
+            delete queryParams.p;
+            
+            var newSearch = Object.keys(queryParams)
+              .map(function(key) {
+                return key + '=' + queryParams[key];
+              })
+              .join('&');
+            
+            var newUrl = pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            
+            // Använd history API för att ersätta URL
+            window.history.replaceState(null, null, newUrl);
+          }
         }
-      }(window.location))
+      })();
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

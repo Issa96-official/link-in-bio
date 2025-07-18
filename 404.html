@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Issa Alissa - Link in Bio</title>
+  <script type="text/javascript">
+    // Anpassad SPA-routing för GitHub Pages
+    // Baserad på https://github.com/rafgraph/spa-github-pages
+    
+    // Omdirigera till huvudsidan med rätt parametrar
+    var segmentCount = 1; // Ändra till 0 för användarnamn.github.io, 1 för project pages
+    
+    var l = window.location;
+    
+    // Omdirigera alla requests till index.html genom att lägga till en särskild query parameter
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
+      l.pathname.slice(1).split('/').slice(segmentCount).join('/') +
+      (l.search ? '&q=' + l.search.slice(1) : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>Om du inte omdirigeras automatiskt, <a href="https://issa96-official.github.io/link-in-bio/">klicka här</a>.</p>
+</body>
+</html>

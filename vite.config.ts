@@ -8,8 +8,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    // Säkerställ att vi inte får några relativa sökvägar som börjar med ../
-    assetsInlineLimit: 0,
     sourcemap: true,
   }
 })
