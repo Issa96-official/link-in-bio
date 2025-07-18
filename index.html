@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Issa Alissa - Link in Bio</title>
     <meta name="description" content="Issa Alissa - All your important links in one place" />
     
@@ -52,7 +53,7 @@
       console.log('Window location:', window.location.href);
       console.log('Checking MIME type issues...');
     </script>
-    <!-- Use relative path instead of absolute with base -->
-    <script type="module" src="./src/main.tsx"></script>
+    <!-- Importera med endast filnamn istället för relativ sökväg -->
+    <script src="dist/assets/index.js"></script>
   </body>
 </html>
