@@ -7,11 +7,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:github": "cross-env VITE_GITHUB_PAGES=true tsc && vite build",
     "preview": "vite preview",
     "server": "node server/index.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
-    "prepare-gh-pages": "node scripts/prepare-github-pages.js",
-    "predeploy": "npm run build && npm run prepare-gh-pages",
+    "prepare-gh-pages": "node prepare-gh-pages.cjs",
+    "predeploy": "npm run build:github && npm run prepare-gh-pages",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -37,6 +38,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

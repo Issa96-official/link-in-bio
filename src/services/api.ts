@@ -2,10 +2,17 @@ import axios from 'axios';
 
 // Base URL - set explicitly to make sure we're connecting to the backend
 // För GitHub Pages, skapa mockdata om vi är i produktion
-const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isGitHubPages = window.location.hostname.includes('github.io') || 
+                      window.location.hostname.includes('issa96-official');
+const isDevelopment = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && !isGitHubPages;
+
+// Logga miljöinformation för felsökning
+console.log('Current hostname:', window.location.hostname);
+console.log('Is development environment:', isDevelopment);
+console.log('Is GitHub Pages:', isGitHubPages);
 
 // Konfigurera API URL - för GitHub Pages demo, använd mockdata
-const API_BASE_URL = isDevelopment 
+const API_BASE_URL = !isGitHubPages && isDevelopment
   ? 'http://localhost:5000/api'
   : ''; // Tom sträng för att använda relativa sökvägar med mockdata
 
@@ -57,12 +64,14 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Om vi är i produktion, lägg till en respons-interceptor för att direkt använda mockdata
-if (!isDevelopment) {
+// Om vi är i produktion eller på GitHub Pages, lägg till en respons-interceptor för att direkt använda mockdata
+if (!isDevelopment || isGitHubPages) {
+  console.log('Setting up mock data for production or GitHub Pages environment');
   // Ersätt hela axios.request metoden för mockdata
   const originalRequest = axios.request;
   
-  axios.request = function(config) {
+  // Använd explicit typning för att åtgärda TypeScript-felet
+  axios.request = function(config): Promise<any> {
     // Kontrollera vilken typ av request det är och returnera mockdata
     const url = config.url || '';
     
