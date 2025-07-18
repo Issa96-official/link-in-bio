@@ -1,29 +1,63 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Issa Alissa - Link in Bio</title>
-  <script type="text/javascript">
-    // Anpassad SPA-routing för GitHub Pages
-    // Baserad på https://github.com/rafgraph/spa-github-pages
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Issa Alissa - Link in Bio</title>
+    <meta name="description" content="Issa Alissa - All your important links in one place" />
     
-    // Omdirigera till huvudsidan med rätt parametrar
-    var segmentCount = 1; // Ändra till 0 för användarnamn.github.io, 1 för project pages
-    
-    var l = window.location;
-    
-    // Omdirigera alla requests till index.html genom att lägga till en särskild query parameter
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/?p=/' +
-      l.pathname.slice(1).split('/').slice(segmentCount).join('/') +
-      (l.search ? '&q=' + l.search.slice(1) : '') +
-      l.hash
-    );
-  </script>
+    <!-- Script för GitHub Pages SPA routing -->
+    <script type="text/javascript">
+      // Hantera GitHub Pages 404 redirects
+      (function() {
+        // Parsa query parameters
+        var redirect = false;
+        var queryParams = {};
+        var search = window.location.search.substring(1);
+        
+        if (search) {
+          var pairs = search.split('&');
+          for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split('=');
+            queryParams[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+          }
+          
+          // Om vi har en 'p' parameter, det innebär att vi kommer från 404.html
+          if (queryParams.p) {
+            redirect = true;
+            var pathname = queryParams.p;
+            delete queryParams.p;
+            
+            var newSearch = Object.keys(queryParams)
+              .map(function(key) {
+                return key + '=' + queryParams[key];
+              })
+              .join('&');
+            
+            var newUrl = pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            
+            // Använd history API för att ersätta URL
+            window.history.replaceState(null, null, newUrl);
+          }
+        }
+      })();
+    </script>
+  <script>
+      console.log('Built for GitHub Pages - JavaScript Version');
+      console.log('Base URL:', window.location.href);
+    </script>
 </head>
-<body>
-  <h1>Redirecting...</h1>
-  <p>Om du inte omdirigeras automatiskt, <a href="https://issa96-official.github.io/link-in-bio/">klicka här</a>.</p>
-</body>
+  <body>
+    <div id="root"></div>
+    <!-- Konsollmeddelande för att se om sidan laddar -->
+    <script>
+      console.log('Index.html loaded');
+      console.log('Window location:', window.location.href);
+      console.log('Checking MIME type issues...');
+    </script>
+    <!-- Importera med JavaScript istället för TypeScript -->
+    <script type="module" src="./assets/index.js"></script>
+  </body>
 </html>
