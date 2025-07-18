@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 // Base URL - set explicitly to make sure we're connecting to the backend
-const API_BASE_URL = 'http://localhost:5000/api';
+// For GitHub Pages, we'll use a conditional to check if we're in production
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isDevelopment 
+  ? 'http://localhost:5000/api' 
+  : 'https://api.example.com/api'; // Du behöver ersätta detta med din faktiska API-URL när du har en
 
 // Configure axios
 axios.defaults.baseURL = API_BASE_URL;
