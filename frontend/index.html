@@ -2,13 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Skappa Link in Bio</title>
-    <meta name="description" content="Skappa Link in Bio - All your important links in one place" />
+    <title>Issa Alissa - Link in Bio</title>
+    <meta name="description" content="Issa Alissa - All your important links in one place" />
+    <!-- Ensure JavaScript modules are loaded with the correct MIME type -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Debug message -->
+    <script>
+      console.log('Frontend index.html loaded');
+      console.log('Window location:', window.location.href);
+    </script>
+    <!-- Use absolute path with base for module loading -->
+    <script type="module" src="%BASE_URL%src/main.tsx"></script>
   </body>
 </html>

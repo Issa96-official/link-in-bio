@@ -12,6 +12,15 @@ export default defineConfig({
     emptyOutDir: true, // Rensa dist-mappen innan byggning
     minify: 'terser', // Använd terser för minifiering
     target: 'es2015', // Kompatibilitet med äldre webbläsare
+    rollupOptions: {
+      output: {
+        // Ensure correct MIME types
+        manualChunks: undefined,
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
   },
   server: {
     cors: true,

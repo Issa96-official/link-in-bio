@@ -10,21 +10,33 @@ import { AuthProvider } from './contexts/AuthContext';
 import { profileAPI } from './services/api';
 import './styles/App.scss';
 
+// Debug info for troubleshooting MIME issues
+console.log('App.tsx loaded');
+console.log('Current URL:', window.location.href);
+console.log('Base URL path:', import.meta.env.BASE_URL || '/');
+console.log('GitHub Pages?', window.location.hostname.includes('github.io'));
+
 function App() {
   const [theme, setTheme] = useState('light');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Fetch the initial theme from the profile
   useEffect(() => {
     const fetchProfileTheme = async () => {
       try {
         console.log('Fetching profile theme...');
+        setLoading(true);
         const response = await profileAPI.getProfile();
         console.log('Profile response:', response);
         if (response.data && response.data.theme) {
           setTheme(response.data.theme);
         }
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch profile theme:', error);
+        setError('Failed to load profile. Using default theme.');
+        setLoading(false);
       }
     };
     
@@ -58,7 +70,13 @@ function App() {
               <div className="container">
                 <Header toggleTheme={toggleTheme} theme={theme} />
                 <main>
-                  <LinkList />
+                  {loading ? (
+                    <div className="loading-indicator">Loading your links...</div>
+                  ) : error ? (
+                    <div className="error-message">{error}</div>
+                  ) : (
+                    <LinkList />
+                  )}
                 </main>
                 <Footer />
               </div>
