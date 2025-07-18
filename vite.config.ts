@@ -10,7 +10,7 @@ export default defineConfig({
     assetsDir: 'assets',
     sourcemap: true,
     emptyOutDir: true, // Rensa dist-mappen innan byggning
-    minify: 'terser', // Använd terser för minifiering
+    minify: 'esbuild', // Använd esbuild istället för terser för minifiering
     target: 'es2015', // Kompatibilitet med äldre webbläsare
     rollupOptions: {
       output: {

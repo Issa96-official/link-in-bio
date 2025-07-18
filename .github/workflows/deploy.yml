@@ -23,8 +23,12 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Ensure Terser is installed
+        run: npm install terser --no-save
       - name: Build
         run: npm run build:github
+      - name: Fix GitHub Pages
+        run: node fix-github-pages.cjs
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Copy 404.html
