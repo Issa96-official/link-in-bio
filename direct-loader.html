@@ -8,41 +8,161 @@
   <meta name="description" content="Issa Alissa - All your important links in one place" />
   <!-- Force correct content type -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <script src="./debug.js"></script>
   <script>
     console.log('Direct loader index.html loaded');
     console.log('Window location:', window.location.href);
+    console.log('Hostname:', window.location.hostname);
+    
+    // Attempt to detect and log the correct path for assets
+    function detectAssetPaths() {
+      const possiblePaths = [
+        './assets/',
+        '/link-in-bio/assets/',
+        '../assets/',
+        '/assets/'
+      ];
+      
+      console.log('Attempting to detect asset paths...');
+      for (const path of possiblePaths) {
+        console.log('Trying path:', path);
+        
+        // In a real implementation, we would try to fetch from these paths
+        // But for now, just log them for debugging
+      }
+    }
+    
+    detectAssetPaths();
     
     // Helper function to load script with proper type
     function loadScript(src, type) {
       return new Promise((resolve, reject) => {
+        console.log('Attempting to load script from:', src);
         const script = document.createElement('script');
         script.src = src;
-        script.type = type || 'text/javascript';
-        script.onload = resolve;
-        script.onerror = reject;
+        script.type = type || 'module'; // Use module as default
+        script.onload = () => {
+          console.log('Successfully loaded script:', src);
+          resolve();
+        };
+        script.onerror = (e) => {
+          console.error('Failed to load script:', src, e);
+          reject(e);
+        };
         document.head.appendChild(script);
       });
     }
 
+    // Try different script paths
+    async function tryLoadingScripts() {
+      const scripts = [
+        './assets/index.js',
+        '/link-in-bio/assets/index.js',
+        './dist/assets/index.js',
+        '/link-in-bio/dist/assets/index.js'
+      ];
+      
+      // Also try to look for scripts with hash in the name
+      try {
+        const response = await fetch('./assets/');
+        if (response.ok) {
+          const text = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, 'text/html');
+          const links = Array.from(doc.querySelectorAll('a'));
+          const jsFiles = links
+            .map(link => link.href)
+            .filter(href => href.endsWith('.js'));
+          
+          scripts.push(...jsFiles);
+          console.log('Found JS files in assets directory:', jsFiles);
+        }
+      } catch (e) {
+        console.warn('Could not list assets directory:', e);
+      }
+      
+      // Try each script until one works
+      for (const script of scripts) {
+        try {
+          await loadScript(script);
+          console.log('Successfully loaded script:', script);
+          return true;
+        } catch (e) {
+          console.warn(`Failed to load script ${script}:`, e);
+        }
+      }
+      
+      // If all attempts fail, show error
+      document.getElementById('loading-message').innerHTML = `
+        <h1>Failed to load application</h1>
+        <p>Could not load the required JavaScript files. Please check your internet connection or try again later.</p>
+        <p>Technical details: Could not find main JavaScript bundle.</p>
+      `;
+      return false;
+    }
+
     // Wait for DOM to be ready
     window.addEventListener('DOMContentLoaded', () => {
-      // Load the JavaScript files manually
-      Promise.all([
-        loadScript('./assets/index.js', 'text/javascript')
-      ])
-      .then(() => console.log('All scripts loaded successfully'))
-      .catch(err => console.error('Failed to load scripts:', err));
+      tryLoadingScripts()
+        .then(success => {
+          if (success) {
+            console.log('Application scripts loaded successfully');
+          } else {
+            console.error('Failed to load application scripts');
+          }
+        })
+        .catch(err => console.error('Error in script loading process:', err));
     });
   </script>
+  
+  <!-- Add base CSS for the loader -->
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    
+    #loading-message {
+      text-align: center;
+      padding-top: 40px;
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    #loading-message h1 {
+      color: #7C41F5;
+    }
+    
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #7C41F5;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <div id="root"></div>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   
-  <!-- Fallback message -->
-  <div id="loading-message" style="text-align: center; padding-top: 40px; font-family: sans-serif;">
-    <h1>Loading application...</h1>
-    <p>If nothing happens, please check the browser console for errors.</p>
+  <!-- Loading message -->
+  <div id="loading-message">
+    <h1>Loading Issa Alissa's Link in Bio</h1>
+    <div class="spinner"></div>
+    <p>Please wait while the application loads...</p>
+    <p>If nothing happens after a few seconds, please check your internet connection or try refreshing the page.</p>
   </div>
 
   <script>

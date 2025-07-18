@@ -6,14 +6,15 @@
   "homepage": "https://issa96-official.github.io/link-in-bio/",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:github": "cross-env VITE_GITHUB_PAGES=true tsc && vite build",
+    "build": "vite build",
+    "build:github": "cross-env VITE_GITHUB_PAGES=true vite build",
     "preview": "vite preview",
     "server": "node server/index.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "prepare-gh-pages": "node prepare-gh-pages.cjs",
     "fix-gh-pages": "node fix-github-pages.cjs",
-    "predeploy": "npm run build:github && npm run fix-gh-pages",
+    "copy-debug-files": "node copy-debug-files.cjs",
+    "predeploy": "npm run build:github && npm run fix-gh-pages && npm run copy-debug-files",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -33,10 +34,6 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
@@ -47,7 +44,6 @@
     "nodemon": "^3.0.3",
     "sass": "^1.72.0",
     "terser": "^5.43.1",
-    "typescript": "^5.2.2",
     "vite": "^5.0.8"
   }
 }

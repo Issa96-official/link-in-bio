@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('Starting GitHub Pages preparation...');
+console.log('Starting GitHub Pages preparation for JavaScript version...');
 
 // Copy the index.html to the dist folder
 const distPath = path.join(__dirname, 'dist');
@@ -26,15 +26,16 @@ if (fs.existsSync(rootIndexPath)) {
   
   if (indexJsFile) {
     console.log(`Found main JS file: ${indexJsFile}`);
+    // Update to use JavaScript instead of TypeScript
     indexContent = indexContent.replace(
-      /<script.*src="dist\/assets\/index.js"><\/script>/,
-      `<script src="./assets/${indexJsFile}"></script>`
+      /<script.*src=".*main.jsx"><\/script>/,
+      `<script type="module" src="./assets/${indexJsFile}"></script>`
     );
   } else {
     console.log('Could not find main JS file, using fallback pattern');
     indexContent = indexContent.replace(
-      /<script.*src="dist\/assets\/index.js"><\/script>/,
-      '<script src="./assets/index.js"></script>'
+      /<script.*src=".*main.jsx"><\/script>/,
+      '<script type="module" src="./assets/index.js"></script>'
     );
   }
   
@@ -42,7 +43,7 @@ if (fs.existsSync(rootIndexPath)) {
   indexContent = indexContent.replace(
     '</head>',
     `<script>
-      console.log('Built for GitHub Pages');
+      console.log('Built for GitHub Pages - JavaScript Version');
       console.log('Base URL:', window.location.href);
     </script>
 </head>`
@@ -53,31 +54,6 @@ if (fs.existsSync(rootIndexPath)) {
   console.log('Copied and updated index.html to dist folder');
 } else {
   console.error('Error: No index.html found in root folder');
-}
-
-// Copy the direct-loader.html to the dist folder if it exists
-const directLoaderPath = path.join(__dirname, 'direct-loader.html');
-if (fs.existsSync(directLoaderPath)) {
-  let loaderContent = fs.readFileSync(directLoaderPath, 'utf8');
-  
-  // Fix script reference to point to correct JavaScript file
-  const files = fs.readdirSync(path.join(distPath, 'assets'));
-  const indexJsFile = files.find(file => file.startsWith('index-') && file.endsWith('.js'));
-  
-  if (indexJsFile) {
-    loaderContent = loaderContent.replace(
-      /\.\/assets\/index.js/g,
-      `./assets/${indexJsFile}`
-    );
-  }
-  
-  // Write the modified direct-loader.html to dist folder
-  fs.writeFileSync(path.join(distPath, 'direct-loader.html'), loaderContent);
-  console.log('Copied and updated direct-loader.html to dist folder');
-  
-  // Also create a backup index-direct.html
-  fs.writeFileSync(path.join(distPath, 'index-direct.html'), loaderContent);
-  console.log('Created backup index-direct.html in dist folder');
 }
 
 // Create a .nojekyll file to prevent GitHub Pages from ignoring files that start with an underscore
@@ -126,19 +102,89 @@ const webConfigContent = `<?xml version="1.0" encoding="UTF-8"?>
       <remove fileExtension=".css" />
       <mimeMap fileExtension=".css" mimeType="text/css" />
     </staticContent>
+    <rewrite>
+      <rules>
+        <rule name="ReactRouter Routes" stopProcessing="true">
+          <match url=".*" />
+          <conditions logicalGrouping="MatchAll">
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+          </conditions>
+          <action type="Rewrite" url="/link-in-bio/index.html" />
+        </rule>
+      </rules>
+    </rewrite>
   </system.webServer>
 </configuration>`;
 
 fs.writeFileSync(path.join(distPath, 'web.config'), webConfigContent);
-console.log('Created web.config file for MIME types');
+console.log('Created web.config file for MIME types and routing');
 
 // Create an .htaccess file for Apache servers
-const htaccessContent = `AddType application/javascript .js
+const htaccessContent = `<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /link-in-bio/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /link-in-bio/index.html [L]
+</IfModule>
+
+# Set correct MIME types
+AddType application/javascript .js
 AddType application/javascript .mjs
 AddType application/json .json
 AddType text/css .css`;
 
 fs.writeFileSync(path.join(distPath, '.htaccess'), htaccessContent);
-console.log('Created .htaccess file for MIME types');
+console.log('Created .htaccess file for MIME types and routing');
+
+// Create a simple direct loader page as backup
+const directLoaderContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Issa Alissa - Link in Bio</title>
+  <meta name="description" content="Issa Alissa - All your important links in one place">
+  <script>
+    console.log('Direct loader running...');
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <p id="loadingMessage">Loading application...</p>
+  
+  <script>
+    // Find the correct JS file to load
+    fetch('./assets/')
+      .then(response => response.text())
+      .then(text => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const links = Array.from(doc.querySelectorAll('a'));
+        const jsFile = links.find(link => link.textContent.includes('index-') && link.textContent.endsWith('.js'));
+        
+        if (jsFile) {
+          console.log('Found JS file:', jsFile.textContent);
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = './assets/' + jsFile.textContent;
+          document.body.appendChild(script);
+        } else {
+          document.getElementById('loadingMessage').textContent = 'Error: Could not find main JS file';
+        }
+      })
+      .catch(error => {
+        console.error('Error loading assets directory:', error);
+        document.getElementById('loadingMessage').textContent = 'Error loading application';
+      });
+  </script>
+</body>
+</html>`;
+
+fs.writeFileSync(path.join(distPath, 'direct-loader.html'), directLoaderContent);
+console.log('Created direct-loader.html as backup');
 
 console.log('GitHub Pages preparation completed successfully!');
