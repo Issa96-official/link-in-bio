@@ -30,6 +30,15 @@ if (fs.existsSync(directLoaderPath)) {
   console.error('Fel: direct-loader.html finns inte');
 }
 
+// Kopiera minimal-loader.html
+const minimalLoaderPath = path.join(__dirname, 'minimal-loader.html');
+if (fs.existsSync(minimalLoaderPath)) {
+  fs.copyFileSync(minimalLoaderPath, path.join(distDir, 'minimal-loader.html'));
+  console.log('Kopierade minimal-loader.html till dist-mappen');
+} else {
+  console.error('Fel: minimal-loader.html finns inte');
+}
+
 // Kopiera deploy.html
 const deployHtmlPath = path.join(__dirname, 'deploy.html');
 if (fs.existsSync(deployHtmlPath)) {

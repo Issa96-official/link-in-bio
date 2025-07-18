@@ -1,5 +1,5 @@
 // App specific styles
-@import './variables';
+@use './variables' as vars;
 
 .app {
   display: flex;
@@ -36,7 +36,7 @@
   }
 }
 
-@media (max-width: $breakpoint-md) {
+@media (max-width: vars.$breakpoint-md) {
   .app {
     &::before {
       width: 250px;

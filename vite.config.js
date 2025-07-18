@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({
+    // Säkerställ att JSX-filer behandlas korrekt
+    jsxRuntime: 'automatic',
+    include: '**/*.{jsx,tsx,js,ts}',
+  })],
   base: '/link-in-bio/', // Sätter basvägen till /link-in-bio/ för GitHub Pages
   build: {
     outDir: 'dist',

@@ -1,4 +1,23 @@
-AddType text/javascript .js
-AddType text/javascript .mjs
+# Set correct MIME types for JavaScript files
 AddType application/javascript .js
+AddType application/javascript .jsx
 AddType application/javascript .mjs
+AddType application/json .json
+AddType text/css .css
+
+# Disable MIME type sniffing
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Content-Type "application/javascript" "expr=%{REQUEST_URI} =~ /\.js$/"
+  Header set Content-Type "application/javascript" "expr=%{REQUEST_URI} =~ /\.jsx$/"
+</IfModule>
+
+# Rewrite rules for SPA
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /link-in-bio/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /link-in-bio/index.html [L]
+</IfModule>

@@ -1,4 +1,4 @@
-@import './variables';
+@use './variables' as vars;
 
 .link-list {
   display: flex;
@@ -48,7 +48,7 @@
   background-color: var(--link-bg);
   border-radius: var(--border-radius);
   box-shadow: 0 4px 20px var(--card-shadow);
-  transition: all $transition-speed ease;
+  transition: all vars.$transition-speed ease;
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -63,7 +63,7 @@
   height: 100%;
   background: var(--link-icon-color, var(--accent-color));
   opacity: 0;
-  transition: opacity $transition-speed ease;
+  transition: opacity vars.$transition-speed ease;
 }
 
 .link-item:hover {
@@ -87,6 +87,7 @@
   padding: 10px;
   position: relative;
   overflow: hidden;
+  transition: opacity vars.$transition-speed ease;
 }
 
 .link-icon::after {
